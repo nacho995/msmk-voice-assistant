@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<!-- Declaración del tipo de documento: HTML5 -->
+
+<html lang="es">
+<!-- Elemento raíz del documento, lang="es" indica que el idioma es español -->
+
+<head>
+    <!-- ===== METADATOS Y CONFIGURACIÓN ===== -->
+    <!-- El <head> contiene información sobre el documento que no se ve en la página -->
+    
+    <meta charset="UTF-8">
+    <!-- charset: Define la codificación de caracteres (UTF-8 soporta todos los idiomas) -->
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- viewport: Hace la página responsive (se adapta a dispositivos móviles) -->
+    <!-- width=device-width: El ancho será el del dispositivo -->
+    <!-- initial-scale=1.0: Zoom inicial al 100% -->
+    
+    <title>MSMK University - AI Voice Assistant</title>
+    <!-- Título que aparece en la pestaña del navegador -->
+    
+    <link rel="stylesheet" href="styles.css">
+    <!-- Enlace al archivo CSS externo que contiene los estilos -->
+</head>
+
+<body>
+<!-- El <body> contiene todo el contenido visible de la página -->
+    <!-- ===== EFECTOS DE FONDO ===== -->
+    
+    <div class="grid-background"></div>
+    <!-- Cuadrícula de fondo estilo HUD (Heads-Up Display) -->
+    
+    <div class="scan-line"></div>
+    <!-- Línea de escaneo animada que se mueve verticalmente -->
+    
+    <!-- ===== MARCOS DE ESQUINA (Efecto HUD) ===== -->
+    <!-- Cuatro elementos que crean un marco en cada esquina de la pantalla -->
+    
+    <div class="corner-frame top-left"></div>
+    <!-- Marco superior izquierdo -->
+    
+    <div class="corner-frame top-right"></div>
+    <!-- Marco superior derecho -->
+    
+    <div class="corner-frame bottom-left"></div>
+    <!-- Marco inferior izquierdo -->
+    
+    <div class="corner-frame bottom-right"></div>
+    <!-- Marco inferior derecho -->
+
+    <!-- ===== ETIQUETA SUPERIOR ===== -->
+    <div class="tech-label">MSMK UNIVERSITY · AI VOICE INTERFACE</div>
+    <!-- Título que aparece en la parte superior de la pantalla -->
+
+    <!-- ===== CANVAS (Lienzo de dibujo) ===== -->
+    <canvas id="canvas"></canvas>
+    <!-- Elemento donde JavaScript dibuja todas las animaciones del orbe -->
+    <!-- El atributo id="canvas" permite que JavaScript lo encuentre -->
+
+    <!-- ===== INTERFAZ DE USUARIO (UI) ===== -->
+    <!-- Esta capa se coloca encima del canvas sin bloquear los clicks -->
+    <div class="ui-overlay">
+        <!-- Círculo central estilo Iron Man -->
+        <div class="orbe-circle">
+            <!-- Segundo círculo interno -->
+            <div class="orbe-circle-2">
+                <!-- Mensaje de ayuda para el usuario dentro del círculo -->
+                <div class="click-hint" id="clickHint">CLICK TO ACTIVATE</div>
+            </div>
+        </div>
+        
+        <!-- Texto que muestra el estado del sistema -->
+        <div class="status-text" id="statusText">● LISTENING</div>
+        <!-- ● es el símbolo de un círculo relleno -->
+        <!-- id="statusText" permite que JavaScript cambie su contenido -->
+        <!-- Contenedor de las barras de frecuencia (efecto ecualizador) -->
+        <div class="frequency-bars" id="freqBars">
+            <!-- 7 barras individuales que se animan como un ecualizador de audio -->
+            <div class="freq-bar"></div> <!-- Barra 1 -->
+            <div class="freq-bar"></div> <!-- Barra 2 -->
+            <div class="freq-bar"></div> <!-- Barra 3 -->
+            <div class="freq-bar"></div> <!-- Barra 4 (centro) -->
+            <div class="freq-bar"></div> <!-- Barra 5 -->
+            <div class="freq-bar"></div> <!-- Barra 6 -->
+            <div class="freq-bar"></div> <!-- Barra 7 -->
+        </div>
+    </div>
+
+    <!-- ===== SCRIPTS (CÓDIGO JAVASCRIPT) ===== -->
+    <script src="script.js"></script>
+    <!-- Enlace al archivo JavaScript que contiene toda la lógica de animación -->
+    <!-- Se coloca al final para que el HTML cargue primero -->
+</body>
+</html>
