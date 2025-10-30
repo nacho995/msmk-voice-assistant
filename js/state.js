@@ -6,6 +6,7 @@ const freqBars = document.getElementById('freqBars');
 const clickHint = document.getElementById('clickHint');
 const orbeCircle = document.querySelector('.orbe-circle');
 const orbeCircle2 = document.querySelector('.orbe-circle-2');
+const highlightTextEl = document.querySelector('.highlight-text');
 
 // Variables de estado
 let systemActive = false;
@@ -26,12 +27,14 @@ function actualizarInterfaz() {
         freqBars.classList.add('active');
         orbeCircle.classList.add('active');
         orbeCircle2.classList.add('active');
+        if (highlightTextEl) highlightTextEl.classList.add('active');
         clickHint.style.display = 'none';
     } else {
         statusText.classList.remove('active', 'listening');
         freqBars.classList.remove('active');
         orbeCircle.classList.remove('active');
         orbeCircle2.classList.remove('active');
+        if (highlightTextEl) highlightTextEl.classList.remove('active');
         clickHint.style.display = 'block';
     }
 }
