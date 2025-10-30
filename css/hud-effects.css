@@ -1,0 +1,176 @@
+/* ===== EFECTOS HUD ===== */
+
+/* Grid de fondo */
+.grid-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(0, 150, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 150, 255, 0.08) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Línea de escaneo */
+.scan-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent,
+        rgba(0, 150, 255, 0.2) 50%,
+        transparent);
+    box-shadow: 0 0 5px rgba(0, 150, 255, 0.2);
+    animation: scan 6s linear infinite;
+    pointer-events: none;
+    opacity: 0.4;
+    z-index: 2;
+}
+
+@keyframes scan {
+    0% { transform: translateY(-50vh); }
+    100% { transform: translateY(50vh); }
+}
+
+/* Marcos de esquina */
+.corner-frame {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border: 2px solid rgba(0, 150, 255, 0.6);
+    box-shadow: 0 0 10px rgba(0, 150, 255, 0.4);
+    z-index: 15;
+}
+
+.corner-frame.top-left {
+    top: 40px;
+    left: 40px;
+    border-right: none;
+    border-bottom: none;
+}
+
+.corner-frame.top-right {
+    top: 40px;
+    right: 40px;
+    border-left: none;
+    border-bottom: none;
+}
+
+.corner-frame.bottom-left {
+    bottom: 40px;
+    left: 40px;
+    border-right: none;
+    border-top: none;
+}
+
+.corner-frame.bottom-right {
+    bottom: 40px;
+    right: 40px;
+    border-left: none;
+    border-top: none;
+}
+
+/* Etiqueta superior */
+.tech-label {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(0, 200, 255, 0.7);
+    font-size: 32px;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    font-weight: 900;
+    padding: 15px 30px;
+    border: 3px solid rgba(0, 150, 255, 0.8);
+    border-radius: 8px;
+    background: rgba(0, 20, 40, 0.6);
+    box-shadow: 
+        0 0 20px rgba(0, 150, 255, 0.6),
+        0 0 40px rgba(0, 150, 255, 0.4),
+        inset 0 0 20px rgba(0, 150, 255, 0.1);
+    text-shadow: 
+        0 0 10px rgba(0, 212, 255, 0.5),
+        0 0 20px rgba(0, 150, 255, 0.3);
+    backdrop-filter: blur(5px);
+    z-index: 20;
+}
+
+/* MSMK UNIVERSITY destacado con efectos tecnológicos */
+.highlight-text {
+    color: #00FFFF;
+    font-size: 36px;
+    font-weight: 900;
+    letter-spacing: 10px;
+    text-shadow: 
+        0 0 5px rgba(0, 255, 255, 1),
+        0 0 10px rgba(0, 255, 255, 0.9),
+        0 0 20px rgba(0, 200, 255, 0.8),
+        0 0 30px rgba(0, 200, 255, 0.6),
+        0 0 40px rgba(0, 150, 255, 0.5),
+        0 0 60px rgba(0, 150, 255, 0.3);
+    animation: glow-pulse 2s ease-in-out infinite;
+    display: inline-block;
+    position: relative;
+}
+
+/* Efecto de línea inferior tecnológica */
+.highlight-text::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(0, 255, 255, 0.8) 20%, 
+        rgba(0, 255, 255, 1) 50%, 
+        rgba(0, 255, 255, 0.8) 80%, 
+        transparent 100%);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    animation: line-scan 3s linear infinite;
+}
+
+/* Animación de pulso de brillo */
+@keyframes glow-pulse {
+    0%, 100% {
+        text-shadow: 
+            0 0 5px rgba(0, 255, 255, 1),
+            0 0 10px rgba(0, 255, 255, 0.9),
+            0 0 20px rgba(0, 200, 255, 0.8),
+            0 0 30px rgba(0, 200, 255, 0.6),
+            0 0 40px rgba(0, 150, 255, 0.5),
+            0 0 60px rgba(0, 150, 255, 0.3);
+    }
+    50% {
+        text-shadow: 
+            0 0 10px rgba(0, 255, 255, 1),
+            0 0 20px rgba(0, 255, 255, 1),
+            0 0 30px rgba(0, 200, 255, 0.9),
+            0 0 40px rgba(0, 200, 255, 0.8),
+            0 0 60px rgba(0, 150, 255, 0.7),
+            0 0 80px rgba(0, 150, 255, 0.5);
+    }
+}
+
+/* Animación de línea de escaneo */
+@keyframes line-scan {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}

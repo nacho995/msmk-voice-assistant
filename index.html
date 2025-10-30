@@ -19,8 +19,8 @@
     <title>MSMK University - AI Voice Assistant</title>
     <!-- Título que aparece en la pestaña del navegador -->
     
-    <link rel="stylesheet" href="styles.css">
-    <!-- Enlace al archivo CSS externo que contiene los estilos -->
+    <link rel="stylesheet" href="css/main.css">
+    <!-- Enlace al archivo CSS modular -->
 </head>
 
 <body>
@@ -49,7 +49,7 @@
     <!-- Marco inferior derecho -->
 
     <!-- ===== ETIQUETA SUPERIOR ===== -->
-    <div class="tech-label">MSMK UNIVERSITY · AI VOICE INTERFACE</div>
+    <div class="tech-label"><span class="highlight-text">MSMK UNIVERSITY</span> · AI VOICE INTERFACE</div>
     <!-- Título que aparece en la parte superior de la pantalla -->
 
     <!-- ===== CANVAS (Lienzo de dibujo) ===== -->
@@ -87,8 +87,14 @@
     </div>
 
     <!-- ===== SCRIPTS (CÓDIGO JAVASCRIPT) ===== -->
-    <script src="script.js"></script>
-    <!-- Enlace al archivo JavaScript que contiene toda la lógica de animación -->
-    <!-- Se coloca al final para que el HTML cargue primero -->
+    <!-- Los archivos se cargan en orden de dependencias -->
+    <script src="js/config.js"></script>
+    <script src="js/responsive.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/drawing.js"></script>
+    <script src="js/orb.js"></script>
+    <script src="js/animation.js"></script>
+    <script src="js/events.js"></script>
+    <script src="js/init.js"></script>
 </body>
 </html>

@@ -1,0 +1,255 @@
+/* ===== REACTOR ARC - BOTÓN DE ACTIVACIÓN ===== */
+
+/* Contenedor principal del reactor */
+.ui-overlay {
+    position: absolute;
+    top: 51.1%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Círculo exterior del reactor Arc */
+.orbe-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    background: radial-gradient(circle, 
+        rgba(0, 20, 40, 0.95) 0%, 
+        rgba(0, 10, 20, 0.98) 100%);
+    border: 4px solid rgba(0, 150, 255, 0.4);
+    box-shadow: 
+        inset 0 0 40px rgba(0, 0, 0, 0.9),
+        0 0 30px rgba(0, 150, 255, 0.3);
+    transition: all 0.5s ease;
+    pointer-events: auto;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Segmentos decorativos externos (estilo Iron Man) */
+.orbe-circle::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: 
+        repeating-conic-gradient(
+            from 0deg,
+            transparent 0deg,
+            transparent 8deg,
+            rgba(0, 150, 255, 0.15) 8deg,
+            rgba(0, 150, 255, 0.15) 10deg
+        );
+    opacity: 0.6;
+}
+
+/* Anillos concéntricos externos */
+.orbe-circle::after {
+    content: '';
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 150, 255, 0.2);
+    box-shadow: 
+        inset 0 0 20px rgba(0, 150, 255, 0.1),
+        0 0 15px rgba(0, 150, 255, 0.2);
+}
+
+/* Círculo medio del reactor */
+.orbe-circle-2 {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, 
+        rgba(0, 30, 50, 1) 0%,
+        rgba(0, 20, 35, 1) 40%,
+        rgba(0, 15, 25, 0.95) 100%);
+    border: 3px solid rgba(0, 180, 255, 0.5);
+    box-shadow: 
+        inset 0 0 30px rgba(0, 0, 0, 0.9),
+        inset 0 0 50px rgba(0, 150, 255, 0.1),
+        0 0 20px rgba(0, 150, 255, 0.3);
+    transition: all 0.5s ease;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Anillo decorativo medio */
+.orbe-circle-2::before {
+    content: '';
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 180, 255, 0.3);
+    box-shadow: inset 0 0 15px rgba(0, 150, 255, 0.2);
+}
+
+/* Núcleo central del reactor */
+.orbe-circle-2::after {
+    content: '';
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+        rgba(0, 200, 255, 0.3) 0%,
+        rgba(0, 150, 255, 0.1) 50%,
+        transparent 100%);
+    border: 2px solid rgba(0, 200, 255, 0.4);
+    box-shadow: 
+        inset 0 0 20px rgba(0, 150, 255, 0.3),
+        0 0 25px rgba(0, 150, 255, 0.2);
+}
+
+/* ===== ESTADO ACTIVO DEL REACTOR ===== */
+
+/* Círculo exterior activo */
+.orbe-circle.active {
+    border-color: rgba(0, 200, 255, 0.8);
+    background: radial-gradient(circle, 
+        rgba(0, 150, 255, 0.1) 0%, 
+        rgba(0, 20, 40, 0.95) 100%);
+    box-shadow: 
+        inset 0 0 50px rgba(0, 150, 255, 0.3),
+        0 0 40px rgba(0, 150, 255, 0.6),
+        0 0 70px rgba(0, 150, 255, 0.4);
+}
+
+.orbe-circle.active::before {
+    opacity: 1;
+    animation: reactor-rotate 10s linear infinite, segments-glow 2s ease-in-out infinite alternate;
+}
+
+/* Círculo medio activo */
+.orbe-circle-2.active {
+    border-color: rgba(0, 200, 255, 0.9);
+    background: radial-gradient(circle, 
+        rgba(0, 180, 255, 0.2) 0%,
+        rgba(0, 40, 60, 1) 40%,
+        rgba(0, 20, 35, 0.95) 100%);
+    box-shadow: 
+        inset 0 0 40px rgba(0, 150, 255, 0.4),
+        inset 0 0 60px rgba(0, 150, 255, 0.2),
+        0 0 35px rgba(0, 150, 255, 0.6),
+        0 0 50px rgba(0, 150, 255, 0.4);
+    animation: reactor-pulse-inner 2s ease-in-out infinite;
+}
+
+.orbe-circle-2.active::after {
+    background: radial-gradient(circle,
+        rgba(0, 220, 255, 0.6) 0%,
+        rgba(0, 180, 255, 0.3) 50%,
+        transparent 100%);
+    border-color: rgba(0, 220, 255, 0.8);
+    box-shadow: 
+        inset 0 0 30px rgba(0, 180, 255, 0.5),
+        0 0 40px rgba(0, 180, 255, 0.6),
+        0 0 60px rgba(0, 150, 255, 0.4);
+    animation: core-pulse 1.5s ease-in-out infinite;
+}
+
+/* ===== ANIMACIONES DEL REACTOR ===== */
+
+/* Rotación del reactor exterior */
+@keyframes reactor-rotate {
+    0% { 
+        transform: rotate(0deg);
+    }
+    100% { 
+        transform: rotate(360deg);
+    }
+}
+
+/* Brillo de los segmentos */
+@keyframes segments-glow {
+    0% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Pulsación del círculo interior */
+@keyframes reactor-pulse-inner {
+    0%, 100% {
+        box-shadow: 
+            inset 0 0 40px rgba(0, 150, 255, 0.4),
+            inset 0 0 60px rgba(0, 150, 255, 0.2),
+            0 0 35px rgba(0, 150, 255, 0.6),
+            0 0 50px rgba(0, 150, 255, 0.4);
+    }
+    50% {
+        box-shadow: 
+            inset 0 0 50px rgba(0, 150, 255, 0.5),
+            inset 0 0 70px rgba(0, 150, 255, 0.3),
+            0 0 45px rgba(0, 150, 255, 0.7),
+            0 0 60px rgba(0, 150, 255, 0.5);
+    }
+}
+
+/* Pulsación del núcleo central */
+@keyframes core-pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 
+            inset 0 0 30px rgba(0, 180, 255, 0.5),
+            0 0 40px rgba(0, 180, 255, 0.6),
+            0 0 60px rgba(0, 150, 255, 0.4);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 
+            inset 0 0 40px rgba(0, 200, 255, 0.7),
+            0 0 50px rgba(0, 200, 255, 0.8),
+            0 0 80px rgba(0, 180, 255, 0.6);
+    }
+}
+
+/* ===== TEXTO DE AYUDA ===== */
+.click-hint {
+    position: relative;
+    color: rgba(0, 200, 255, 0.9);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    text-shadow: 
+        0 0 10px rgba(0, 180, 255, 0.6),
+        0 0 20px rgba(0, 150, 255, 0.4);
+    animation: pulse-hint 2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 10;
+    line-height: 1.4;
+    max-width: 90px;
+}
+
+@keyframes pulse-hint {
+    0%, 100% { 
+        opacity: 0.6;
+        text-shadow: 
+            0 0 10px rgba(0, 180, 255, 0.5),
+            0 0 15px rgba(0, 150, 255, 0.3);
+    }
+    50% { 
+        opacity: 1;
+        text-shadow: 
+            0 0 20px rgba(0, 200, 255, 0.8), 
+            0 0 30px rgba(0, 180, 255, 0.5);
+    }
+}
