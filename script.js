@@ -5,6 +5,29 @@ const API_VOICE_ENDPOINT = `${BACKEND_URL}/api/voice/process`;
 // Variable para mantener conversation_id (memoria conversacional)
 let conversationId = null;
 
+// ===== FUNCIÓN HELPER: Decodificar Base64 UTF-8 =====
+/**
+ * Decodifica correctamente strings Base64 que contienen UTF-8 (emojis, acentos, ñ, etc.)
+ * Soluciona el problema de atob() que solo soporta ASCII
+ */
+function base64DecodeUTF8(base64Str) {
+    try {
+        // Decodificar Base64 a bytes
+        const binaryString = atob(base64Str);
+        
+        // Convertir bytes a porcentaje-encoded string
+        const percentEncoded = Array.from(binaryString)
+            .map(char => '%' + ('00' + char.charCodeAt(0).toString(16)).slice(-2))
+            .join('');
+        
+        // Decodificar UTF-8
+        return decodeURIComponent(percentEncoded);
+    } catch (error) {
+        console.error('❌ Error decodificando Base64 UTF-8:', error);
+        return base64Str; // Fallback: devolver original
+    }
+}
+
 // ===== OBTENER ELEMENTOS DEL DOM =====
 const canvas = document.getElementById('canvas'); // Elemento canvas 
 const ctx = canvas.getContext('2d'); // Contexto del canvas
@@ -140,8 +163,8 @@ async function enviarAudioAlBackend(audioBlob) {
                 console.warn('⚠️ No se recibió X-Session-ID del backend');
             }
             
-            const transcribedText = transcribedTextHeader ? atob(transcribedTextHeader) : '';
-            const llmResponse = llmResponseHeader ? atob(llmResponseHeader) : '';
+            const transcribedText = transcribedTextHeader ? base64DecodeUTF8(transcribedTextHeader) : '';
+            const llmResponse = llmResponseHeader ? base64DecodeUTF8(llmResponseHeader) : '';
             
             // Mostrar en consola
             console.log('👤 Usuario:', transcribedText);
