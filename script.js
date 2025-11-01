@@ -129,7 +129,7 @@ async function enviarAudioAlBackend(audioBlob) {
         
         // Obtener headers (Base64 encoded)
         try {
-            const conversationIdHeader = response.headers.get('X-Conversation-Id');
+            const conversationIdHeader = response.headers.get('X-Session-ID');  // ← FIX: Backend envía X-Session-ID
             const transcribedTextHeader = response.headers.get('X-Transcribed-Text');
             const llmResponseHeader = response.headers.get('X-Response-Text');
             
