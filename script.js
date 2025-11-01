@@ -109,10 +109,10 @@ async function enviarAudioAlBackend(audioBlob) {
         formData.append('audio', audioBlob, 'voice.webm');
         
         if (conversationId) {
-            formData.append('conversation_id', conversationId);
-            console.log('🔄 Enviando con conversation_id:', conversationId);
+            formData.append('session_id', conversationId);  // ← FIX: Backend espera session_id
+            console.log('🔄 Enviando con session_id:', conversationId);
         } else {
-            console.log('🆕 Primera conversación (sin conversation_id)');
+            console.log('🆕 Primera conversación (sin session_id)');
         }
         
         console.log('📤 Enviando audio al backend...');
