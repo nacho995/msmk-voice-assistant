@@ -134,10 +134,10 @@ async function enviarAudioAlBackend(audioBlob) {
             const llmResponseHeader = response.headers.get('X-Response-Text');
             
             if (conversationIdHeader) {
-                conversationId = atob(conversationIdHeader);
-                console.log('💾 Conversation ID guardado:', conversationId);
+                conversationId = conversationIdHeader;  // ← FIX: X-Session-ID viene sin Base64
+                console.log('💾 Session ID guardado:', conversationId);
             } else {
-                console.warn('⚠️ No se recibió conversation_id del backend');
+                console.warn('⚠️ No se recibió X-Session-ID del backend');
             }
             
             const transcribedText = transcribedTextHeader ? atob(transcribedTextHeader) : '';
