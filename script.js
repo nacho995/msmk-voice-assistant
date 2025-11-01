@@ -110,6 +110,9 @@ async function enviarAudioAlBackend(audioBlob) {
         
         if (conversationId) {
             formData.append('conversation_id', conversationId);
+            console.log('🔄 Enviando con conversation_id:', conversationId);
+        } else {
+            console.log('🆕 Primera conversación (sin conversation_id)');
         }
         
         console.log('📤 Enviando audio al backend...');
@@ -132,6 +135,9 @@ async function enviarAudioAlBackend(audioBlob) {
             
             if (conversationIdHeader) {
                 conversationId = atob(conversationIdHeader);
+                console.log('💾 Conversation ID guardado:', conversationId);
+            } else {
+                console.warn('⚠️ No se recibió conversation_id del backend');
             }
             
             const transcribedText = transcribedTextHeader ? atob(transcribedTextHeader) : '';
