@@ -1,4 +1,34 @@
-// Obtener elementos del DOM
+// ===== CONFIGURACIÓN DEL BACKEND =====
+const BACKEND_URL = 'http://localhost:8000';
+const API_VOICE_ENDPOINT = `${BACKEND_URL}/api/voice/process`;
+
+// Variable para mantener conversation_id (memoria conversacional)
+let conversationId = null;
+
+// ===== FUNCIÓN HELPER: Decodificar Base64 UTF-8 =====
+/**
+ * Decodifica correctamente strings Base64 que contienen UTF-8 (emojis, acentos, ñ, etc.)
+ * Soluciona el problema de atob() que solo soporta ASCII
+ */
+function base64DecodeUTF8(base64Str) {
+    try {
+        // Decodificar Base64 a bytes
+        const binaryString = atob(base64Str);
+        
+        // Convertir bytes a porcentaje-encoded string
+        const percentEncoded = Array.from(binaryString)
+            .map(char => '%' + ('00' + char.charCodeAt(0).toString(16)).slice(-2))
+            .join('');
+        
+        // Decodificar UTF-8
+        return decodeURIComponent(percentEncoded);
+    } catch (error) {
+        console.error('❌ Error decodificando Base64 UTF-8:', error);
+        return base64Str; // Fallback: devolver original
+    }
+}
+
+// ===== OBTENER ELEMENTOS DEL DOM =====
 const canvas = document.getElementById('canvas'); // Elemento canvas 
 const ctx = canvas.getContext('2d'); // Contexto del canvas
 const statusText = document.getElementById('statusText'); // Texto de estado
@@ -48,6 +78,12 @@ let currentPulse = 0;
 let currentVoiceLevel = 0;
 let targetVoiceLevel = 0;
 
+// ===== ESTADO DE CAPTURA DE AUDIO =====
+let mediaRecorder = null;
+let audioChunks = [];
+let isRecording = false;
+let isProcessing = false;
+
 // Función pública para el backend: actualizar nivel de voz
 // Recibe un valor entre 0 (silencio) y 1 (voz alta)
 window.updateAIVoiceLevel = function(level) {
@@ -60,16 +96,217 @@ window.updateAIVoiceLevel = function(level) {
     targetVoiceLevel = Math.max(0, Math.min(1, level));
 };
 
-// Eventos de interacción del usuario
+// ===== INICIALIZAR CAPTURA DE AUDIO =====
+async function iniciarCaptura() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        
+        mediaRecorder.ondataavailable = (event) => {
+            audioChunks.push(event.data);
+        };
+        
+        mediaRecorder.onstop = async () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            audioChunks = [];
+            await enviarAudioAlBackend(audioBlob);
+        };
+        
+        console.log('✅ MediaRecorder inicializado correctamente');
+        return true;
+    } catch (error) {
+        console.error('❌ Error al acceder al micrófono:', error);
+        statusText.textContent = 'Error: No se puede acceder al micrófono';
+        return false;
+    }
+}
+
+// ===== ENVIAR AUDIO AL BACKEND =====
+async function enviarAudioAlBackend(audioBlob) {
+    isProcessing = true;
+    statusText.textContent = 'Procesando...';
+    
+    try {
+        // Preparar FormData
+        const formData = new FormData();
+        formData.append('audio', audioBlob, 'voice.webm');
+        
+        if (conversationId) {
+            formData.append('session_id', conversationId);  // ← FIX: Backend espera session_id
+            console.log('🔄 Enviando con session_id:', conversationId);
+        } else {
+            console.log('🆕 Primera conversación (sin session_id)');
+        }
+        
+        console.log('📤 Enviando audio al backend...');
+        
+        // Enviar al backend
+        const response = await fetch(API_VOICE_ENDPOINT, {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        // Obtener headers (Base64 encoded)
+        try {
+            const conversationIdHeader = response.headers.get('X-Session-ID');  // ← FIX: Backend envía X-Session-ID
+            const transcribedTextHeader = response.headers.get('X-Transcribed-Text');
+            const llmResponseHeader = response.headers.get('X-Response-Text');
+            
+            if (conversationIdHeader) {
+                conversationId = conversationIdHeader;  // ← FIX: X-Session-ID viene sin Base64
+                console.log('💾 Session ID guardado:', conversationId);
+            } else {
+                console.warn('⚠️ No se recibió X-Session-ID del backend');
+            }
+            
+            const transcribedText = transcribedTextHeader ? base64DecodeUTF8(transcribedTextHeader) : '';
+            const llmResponse = llmResponseHeader ? base64DecodeUTF8(llmResponseHeader) : '';
+            
+            // Mostrar en consola
+            console.log('👤 Usuario:', transcribedText);
+            console.log('🤖 A.R.C.A:', llmResponse);
+            
+            // Actualizar UI con transcripción
+            statusText.textContent = transcribedText;
+            
+        } catch (decodeError) {
+            console.warn('⚠️ Error decodificando headers:', decodeError);
+        }
+        
+        // Obtener y reproducir audio
+        const audioResponseBlob = await response.blob();
+        await reproducirRespuesta(audioResponseBlob);
+        
+    } catch (error) {
+        console.error('❌ Error al comunicarse con backend:', error);
+        statusText.textContent = 'Error de conexión con el backend';
+        systemActive = false;
+        isRecording = false;
+        isProcessing = false;
+        actualizarInterfaz();
+    }
+}
+
+// ===== REPRODUCIR RESPUESTA CON SINCRONIZACIÓN DEL ORBE =====
+async function reproducirRespuesta(audioBlob) {
+    const objectUrl = URL.createObjectURL(audioBlob);
+    const audio = new Audio(objectUrl);
+    
+    try {
+        // Analizar audio para animar el orbe
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioContext.createMediaElementSource(audio);
+        const analyser = audioContext.createAnalyser();
+        
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+        
+        analyser.fftSize = 256;
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+        
+        // Función para actualizar animación del orbe con el audio
+        function actualizarOrbeConAudio() {
+            if (audio.paused || audio.ended) {
+                window.updateAIVoiceLevel(0);
+                return;
+            }
+            
+            analyser.getByteFrequencyData(dataArray);
+            
+            // Calcular nivel promedio
+            const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
+            const level = average / 255; // Normalizar 0-1
+            
+            window.updateAIVoiceLevel(level);
+            
+            requestAnimationFrame(actualizarOrbeConAudio);
+        }
+        
+        // Reproducir audio
+        statusText.textContent = 'Reproduciendo respuesta...';
+        await audio.play();
+        actualizarOrbeConAudio();
+        
+        console.log('🔊 Reproduciendo respuesta de A.R.C.A...');
+        
+        // Cuando termine, resetear
+        audio.onended = () => {
+            window.updateAIVoiceLevel(0);
+            systemActive = false;
+            isRecording = false;
+            isProcessing = false;
+            statusText.textContent = 'Click para hablar';
+            actualizarInterfaz();
+            
+            // Cleanup
+            URL.revokeObjectURL(objectUrl);
+            audioContext.close();
+            
+            console.log('✅ Reproducción finalizada');
+        };
+        
+    } catch (playError) {
+        console.error('❌ Error al reproducir audio:', playError);
+        statusText.textContent = 'Error al reproducir respuesta';
+        systemActive = false;
+        isRecording = false;
+        isProcessing = false;
+        actualizarInterfaz();
+        URL.revokeObjectURL(objectUrl);
+    }
+}
+
+// ===== EVENTOS DE INTERACCIÓN DEL USUARIO =====
 canvas.addEventListener('click', alternarSistema);
 canvas.addEventListener('touchstart', (e) => {
     alternarSistema();
     e.preventDefault();
 });
 
-function alternarSistema() {
-    systemActive = !systemActive;
-    actualizarInterfaz();
+async function alternarSistema() {
+    // Si está procesando, ignorar clicks
+    if (isProcessing) {
+        console.log('⏳ Esperando respuesta del backend...');
+        return;
+    }
+    
+    if (!systemActive) {
+        // ===== ACTIVAR SISTEMA Y EMPEZAR A GRABAR =====
+        systemActive = true;
+        actualizarInterfaz();
+        
+        // Inicializar captura si es la primera vez
+        if (!mediaRecorder) {
+            const success = await iniciarCaptura();
+            if (!success) {
+                systemActive = false;
+                actualizarInterfaz();
+                return;
+            }
+        }
+        
+        // Iniciar grabación
+        audioChunks = [];
+        isRecording = true;
+        mediaRecorder.start();
+        statusText.textContent = 'Escuchando... (click de nuevo para enviar)';
+        
+        console.log('🎤 Grabando audio...');
+        
+    } else {
+        // ===== DESACTIVAR SISTEMA Y ENVIAR AUDIO =====
+        if (isRecording && mediaRecorder && mediaRecorder.state === 'recording') {
+            isRecording = false;
+            mediaRecorder.stop();
+            statusText.textContent = 'Enviando al backend...';
+            
+            console.log('⏹️ Grabación detenida, enviando...');
+        }
+    }
 }
 
 function actualizarInterfaz() {
