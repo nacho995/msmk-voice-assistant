@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🎤 MSMK Voice Assistant - Sistema Completo
 
 Sistema completo de asistente de voz con IA integrando frontend moderno y backend A.R.C.A-LLM con interfaz interactiva, animaciones avanzadas y procesamiento de voz completo.
@@ -11,7 +12,22 @@ Sistema completo de asistente de voz con IA integrando frontend moderno y backen
 ✅ **Animaciones Fluidas** - Orbes de energía, efectos HUD y transiciones suaves  
 ✅ **Detección Automática de Entorno** - Funciona en Docker y desarrollo local  
 ✅ **Testing Completo** - Suite de tests con Jest para frontend y pytest para backend  
-✅ **Docker Ready** - Docker Compose con imágenes optimizadas para producción
+✅ **Docker Ready** - Docker Compose con imágenes optimizadas para producción  
+=======
+# 🎤 Frontend MSMK Voice Assistant - Integración con A.R.C.A-LLM
+
+Frontend moderno y mejorado para el asistente de voz A.R.C.A-LLM con interfaz interactiva, animaciones avanzadas y integración completa con el backend.
+
+## 📋 Características Principales
+
+✅ **Integración Completa con A.R.C.A-LLM** - Conexión directa con el backend FastAPI  
+✅ **Interfaz Moderna** - Diseño inspirado en Iron Man con efectos visuales avanzados  
+✅ **Captura de Audio en Tiempo Real** - MediaRecorder API con conversión automática a WAV  
+✅ **Animaciones Fluidas** - Orbes de energía, efectos HUD y transiciones suaves  
+✅ **Detección Automática de Entorno** - Funciona en Docker y desarrollo local  
+✅ **Testing Completo** - Suite de tests con Jest y cobertura de código  
+✅ **Docker Ready** - Imagen optimizada con Nginx para producción  
+>>>>>>> 94d433fabce6eb49491cf43b1f0e45c953a1e936
 ✅ **CI/CD Automatizado** - Pipeline con GitHub Actions para tests y despliegue  
 
 ## 🚀 Inicio Rápido
@@ -138,6 +154,7 @@ const CONFIG = {
 
 ```
 msmk-voice-assistant/
+<<<<<<< HEAD
 ├── backend/                    # Backend A.R.C.A-LLM
 │   ├── api/                   # Endpoints FastAPI
 │   │   ├── main.py           # Aplicación principal
@@ -187,6 +204,37 @@ msmk-voice-assistant/
 ├── .github/workflows/      # CI/CD con GitHub Actions
 │   └── ci-cd.yml          # Pipeline automatizado
 └── README.md               # Este archivo
+=======
+├── frontend/                    # Frontend principal
+│   ├── css/                    # Estilos modulares
+│   │   ├── main.css           # Estilos base
+│   │   ├── artistic-effects.css # Efectos visuales
+│   │   ├── arc-reactor.css    # Efectos del orbe
+│   │   ├── gold-chat.css      # Estilos del chat
+│   │   ├── hud-effects.css    # Efectos HUD
+│   │   └── responsive.css     # Diseño responsive
+│   │
+│   ├── js/                     # JavaScript modular
+│   │   ├── backend-integration.js  # Integración con A.R.C.A-LLM
+│   │   ├── config.js          # Configuración global
+│   │   ├── state.js           # Gestión de estado
+│   │   ├── events.js          # Manejo de eventos
+│   │   ├── animation.js       # Animaciones
+│   │   ├── drawing.js         # Canvas y dibujos
+│   │   ├── orb.js             # Lógica del orbe
+│   │   ├── gold-chat.js       # Sistema de chat
+│   │   └── __tests__/         # Tests unitarios
+│   │
+│   ├── index.html             # Página principal
+│   └── Dockerfile             # Imagen Docker del frontend
+│
+├── Dockerfile                  # Dockerfile principal (multi-stage)
+├── docker-compose.yml         # Orquestación completa
+├── package.json               # Dependencias Node.js
+├── .github/workflows/         # CI/CD con GitHub Actions
+│   └── ci-cd.yml             # Pipeline automatizado
+└── README.md                  # Este archivo
+>>>>>>> 94d433fabce6eb49491cf43b1f0e45c953a1e936
 ```
 
 ## 🎨 Características de la Interfaz
@@ -195,7 +243,11 @@ msmk-voice-assistant/
 
 - **Paleta de Colores**: Inspirada en Iron Man (Rojo y Dorado)
 - **Orbe Interactivo**: Animación central con efectos de energía
+<<<<<<< HEAD
 - **Efectos de Fondo**: Circuitos tecnológicos, rayos de energía, orbes flotantes
+=======
+- **Efectos de Fondo**: Circuitos s, rayos de energía, orbes flotantes
+>>>>>>> 94d433fabce6eb49491cf43b1f0e45c953a1e936
 - **HUD Moderno**: Indicadores de estado, animaciones fluidas
 - **Chat Dorado**: Sistema de mensajes con estilo premium
 

@@ -17,6 +17,10 @@ services:
     container_name: msmk-backend
     restart: unless-stopped
     
+    # Permitir acceso al host desde el contenedor
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    
     ports:
       - "8000:8000"  # API Web
     
@@ -30,14 +34,17 @@ services:
       - ./backend/requirements.txt:/app/requirements.txt:ro
     
     environment:
-      # === LM Studio Configuration ===
-      LM_STUDIO_URL: "http://192.168.1.25:1234/v1"
-      LM_STUDIO_MODEL: "qwen/qwen3-4b-2507"
+      # === LLM Configuration (Ollama) ===
+      # Ollama expone API compatible con OpenAI en el puerto 1234
+      # Usa host.docker.internal para acceder al host desde Docker
+      LM_STUDIO_URL: "http://host.docker.internal:1234/v1"
+      LM_STUDIO_MODEL: "qwen2.5:7b"
       LLM_MAX_TOKENS: "150"
       LLM_TEMPERATURE: "0.7"
       
       # === Whisper STT Configuration ===
-      WHISPER_MODEL: "tiny"  # tiny, base, small, medium, large
+      # NOTA: "base" es más robusto que "tiny" y evita problemas de tokenizer
+      WHISPER_MODEL: "base"  # tiny, base, small, medium, large
       WHISPER_DEVICE: "cpu"
       WHISPER_COMPUTE_TYPE: "int8"
       

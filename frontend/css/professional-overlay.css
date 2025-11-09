@@ -1,0 +1,30 @@
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(
+        160deg,
+        rgba(13, 27, 42, 0.88) 0%,
+        rgba(24, 46, 76, 0.9) 35%,
+        rgba(45, 78, 120, 0.92) 70%,
+        rgba(64, 102, 150, 0.95) 100%
+    );
+    mix-blend-mode: color;
+    opacity: 0.85;
+    pointer-events: none;
+    z-index: -1;
+    transition: opacity 1.2s ease, transform 18s ease-in-out;
+    animation: professionalBluePulse 18s ease-in-out infinite alternate;
+}
+
+@keyframes professionalBluePulse {
+    0% {
+        opacity: 0.82;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0.9;
+        transform: scale(1.01);
+    }
+}
+

@@ -1,7 +1,8 @@
 """
-LMStudioClient - Cliente para LLM local vía LM Studio.
+LMStudioClient - Cliente para LLM local vía LM Studio u Ollama.
 
-Usa OpenAI SDK para compatibilidad con LM Studio.
+Usa OpenAI SDK para compatibilidad con LM Studio y Ollama.
+Ollama expone una API compatible con OpenAI en /v1/chat/completions.
 """
 
 import asyncio
@@ -47,8 +48,11 @@ class LMStudioClient:
             api_key="not-needed"  # LM Studio no requiere API key
         )
         
+        # Detectar si es Ollama o LM Studio basado en la URL
+        is_ollama = "ollama" in base_url.lower() or ":11434" in base_url or ":1234" in base_url
+        
         logger.info(
-            f"🧠 LMStudio client initialized: {base_url}, "
+            f"🧠 LLM client initialized ({'Ollama' if is_ollama else 'LM Studio'}): {base_url}, "
             f"model={model}, max_tokens={max_tokens}"
         )
     
@@ -125,10 +129,10 @@ class LMStudioClient:
             return response_text
             
         except OpenAIError as e:
-            logger.error(f"❌ LM Studio API error: {e}")
+            logger.error(f"❌ LLM API error: {e}")
             raise RuntimeError(
-                f"LM Studio failed to respond. "
-                f"Ensure LM Studio is running at {self.base_url}"
+                f"LLM service failed to respond. "
+                f"Ensure Ollama/LM Studio is running at {self.base_url}"
             ) from e
         except Exception as e:
             logger.error(f"❌ Unexpected error: {e}")
@@ -173,10 +177,10 @@ class LMStudioClient:
     
     async def health_check(self) -> bool:
         """
-        Verificar que LM Studio está accesible.
+        Verificar que el servicio LLM (Ollama/LM Studio) está accesible.
         
         Returns:
-            True si LM Studio responde, False si no
+            True si el servicio responde, False si no
         """
         try:
             # Mensaje simple de prueba
@@ -189,18 +193,18 @@ class LMStudioClient:
                 timeout=10.0
             )
             
-            logger.info("✅ LM Studio health check passed")
+            logger.info("✅ LLM service health check passed")
             return True
             
         except asyncio.TimeoutError:
-            logger.warning("⏱️ LM Studio health check timeout")
+            logger.warning("⏱️ LLM service health check timeout")
             return False
         except Exception as e:
-            logger.warning(f"⚠️ LM Studio health check failed: {e}")
+            logger.warning(f"⚠️ LLM service health check failed: {e}")
             return False
     
     def cleanup(self) -> None:
         """Limpiar recursos."""
-        logger.info("🧹 Cleaning up LMStudio client")
+        logger.info("🧹 Cleaning up LLM client")
         # AsyncOpenAI maneja su propio cleanup
 

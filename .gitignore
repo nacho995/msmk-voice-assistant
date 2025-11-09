@@ -2,6 +2,7 @@
 node_modules/
 venv/
 env/
+.venv/
 *.pyc
 __pycache__/
 
@@ -37,4 +38,12 @@ frontend/ssl/
 *.crt
 *.key
 *.pem
+
+# Modelos y cachés (archivos muy grandes)
+models/hf_cache/
+models/**/*.bin
+models/**/*.onnx
+models/**/*.pb
+*.model
+*.ckpt
 
