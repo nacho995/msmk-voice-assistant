@@ -11,7 +11,7 @@
 ### Frontend
 - **Repo**: https://github.com/nacho995/msmk-voice-assistant
 - **Local**: `./` (este directorio - frontend/)
-- **Puerto**: 8080
+- **Puerto**: 3000
 - **Tecnología**: HTML + CSS + JavaScript puro
 
 ## 🚀 Ejecutar Ambos Servicios
@@ -48,10 +48,10 @@ npm install  # Solo la primera vez
 npm start
 
 # Opción 2: Con Python (sin npm)
-python3 -m http.server 8080
+python3 -m http.server 3000
 
 # Opción 3: Con npx (sin instalar)
-npx http-server -p 8080
+npx http-server -p 3000
 ```
 
 ## ✅ Verificar que Todo Funciona
@@ -72,7 +72,7 @@ Debe retornar:
 
 ### 2. Abrir Frontend
 
-Abre tu navegador en: **http://localhost:8080**
+Abre tu navegador en: **http://localhost:3000**
 
 ### 3. Probar Integración
 
@@ -127,7 +127,7 @@ LM_STUDIO_URL=http://127.0.0.1:1234/v1
 LM_STUDIO_MODEL=qwen/qwen3-4b-2507
 WHISPER_MODEL=tiny
 API_PORT=8000
-CORS_ORIGINS=["http://localhost:8080"]
+CORS_ORIGINS=["http://localhost:3000"]
 ```
 
 ## 🐛 Troubleshooting

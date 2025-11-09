@@ -1,0 +1,59 @@
+# Git
+.git
+.gitignore
+.github
+
+# Documentation
+*.md
+docs/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+arca-venv/
+
+# Node
+node_modules/
+npm-debug.log
+package-lock.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+._*
+.Spotlight-V100
+.Trashes
+
+# Logs (se montan como volumen)
+logs/
+
+# Models (se montan como volumen pero incluir estructura)
+# models/
+
+# Tests
+tests/
+pytest.ini
+
+# Temporal
+*.tmp
+*.temp
+
+# SSL Certificates (se copian explícitamente en Dockerfile)
+# frontend/ssl/
+
+# Coverage
+coverage/
+*.coverage
