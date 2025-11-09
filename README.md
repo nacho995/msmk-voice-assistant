@@ -11,7 +11,7 @@ Sistema completo de asistente de voz con IA integrando frontend moderno y backen
 ✅ **Animaciones Fluidas** - Orbes de energía, efectos HUD y transiciones suaves  
 ✅ **Detección Automática de Entorno** - Funciona en Docker y desarrollo local  
 ✅ **Testing Completo** - Suite de tests con Jest para frontend y pytest para backend  
-✅ **Docker Ready** - Docker Compose con imágenes optimizadas para producción  
+✅ **Docker Ready** - Docker Compose con imágenes optimizadas para producción
 ✅ **CI/CD Automatizado** - Pipeline con GitHub Actions para tests y despliegue  
 
 ## 🚀 Inicio Rápido

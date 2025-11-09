@@ -1,0 +1,606 @@
+/* ===== EFECTOS AVANZADOS ADICIONALES ===== */
+
+/* Partículas de ambiente */
+.particle-ambient {
+    position: fixed;
+    width: 2px;
+    height: 2px;
+    background: rgba(0, 200, 255, 0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: floatParticle 20s linear infinite;
+    box-shadow: 0 0 6px rgba(0, 200, 255, 0.6);
+    z-index: 1;
+}
+
+@keyframes floatParticle {
+    0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100vh) translateX(100px);
+        opacity: 0;
+    }
+}
+
+/* Efecto de profundidad mejorado */
+.grid-background {
+    position: relative;
+}
+
+.grid-background::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+        ellipse 80% 80% at 50% 50%,
+        transparent 0%,
+        rgba(0, 150, 255, 0.05) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Mejoras en las transiciones globales */
+* {
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efecto de desenfoque suave en elementos que no están en foco */
+body:not(:hover) .gold-chat-container {
+    filter: blur(0.5px);
+    transition: filter 0.5s ease;
+}
+
+body:hover .gold-chat-container {
+    filter: blur(0);
+}
+
+/* Mejora en el contraste y legibilidad */
+.gold-chat-messages {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Efectos de iluminación ambiental */
+.status-text,
+.frequency-bars,
+.tech-label {
+    will-change: transform, opacity;
+}
+
+/* Mejora en los efectos de profundidad */
+.gold-message {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+}
+
+.gold-message-content {
+    transform: translateZ(10px);
+}
+
+/* ===== EFECTOS TECH IA CODING - BACKGROUND ===== */
+/* Efectos antiguos deshabilitados - reemplazados por artistic-effects.css */
+/* Comentado para mantener compatibilidad pero no activo
+
+/* Código flotante - Líneas de código moviéndose sutilmente */
+.floating-code {
+    position: fixed;
+    font-family: 'Courier New', 'Share Tech Mono', monospace;
+    font-size: 8px;
+    line-height: 1.2;
+    color: rgba(99, 102, 241, 0.15) !important;
+    white-space: pre;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+    filter: blur(1.2px);
+    word-spacing: 2px;
+    letter-spacing: 0.5px;
+    opacity: 0.12;
+    max-width: 180px;
+    text-shadow: 0 0 3px rgba(99, 102, 241, 0.3);
+}
+
+.floating-code-1 {
+    top: 10%;
+    left: 5%;
+    animation: codeFloat1 70s linear infinite;
+}
+
+.floating-code-2 {
+    top: 20%;
+    right: 8%;
+    animation: codeFloat2 85s linear infinite;
+    animation-delay: -20s;
+}
+
+.floating-code-3 {
+    bottom: 30%;
+    left: 12%;
+    animation: codeFloat3 75s linear infinite;
+    animation-delay: -35s;
+}
+
+.floating-code-4 {
+    top: 50%;
+    right: 15%;
+    animation: codeFloat4 80s linear infinite;
+    animation-delay: -50s;
+}
+
+@keyframes codeFloat1 {
+    0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0.1;
+    }
+    50% {
+        transform: translateY(-30vh) translateX(10px);
+        opacity: 0.15;
+    }
+    100% {
+        transform: translateY(-60vh) translateX(0);
+        opacity: 0.1;
+    }
+}
+
+@keyframes codeFloat2 {
+    0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0.1;
+    }
+    50% {
+        transform: translateY(-25vh) translateX(-8px);
+        opacity: 0.15;
+    }
+    100% {
+        transform: translateY(-50vh) translateX(0);
+        opacity: 0.1;
+    }
+}
+
+@keyframes codeFloat3 {
+    0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0.1;
+    }
+    50% {
+        transform: translateY(20vh) translateX(12px);
+        opacity: 0.15;
+    }
+    100% {
+        transform: translateY(40vh) translateX(0);
+        opacity: 0.1;
+    }
+}
+
+@keyframes codeFloat4 {
+    0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0.1;
+    }
+    50% {
+        transform: translateY(-35vh) translateX(-10px);
+        opacity: 0.15;
+    }
+    100% {
+        transform: translateY(-70vh) translateX(0);
+        opacity: 0.1;
+    }
+}
+
+/* Red neuronal - Líneas de conexión entre nodos */
+.neural-network {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.25;
+}
+
+.neural-network::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        /* Nodos - puntos de conexión */
+        radial-gradient(circle at 15% 25%, rgba(99, 102, 241, 0.4) 2px, transparent 4px),
+        radial-gradient(circle at 85% 35%, rgba(99, 102, 241, 0.4) 2px, transparent 4px),
+        radial-gradient(circle at 50% 60%, rgba(99, 102, 241, 0.4) 2px, transparent 4px),
+        radial-gradient(circle at 20% 75%, rgba(99, 102, 241, 0.4) 2px, transparent 4px),
+        radial-gradient(circle at 80% 15%, rgba(99, 102, 241, 0.4) 2px, transparent 4px),
+        radial-gradient(circle at 40% 45%, rgba(99, 102, 241, 0.35) 2px, transparent 3.5px),
+        radial-gradient(circle at 60% 80%, rgba(99, 102, 241, 0.35) 2px, transparent 3.5px),
+        /* Líneas de conexión */
+        linear-gradient(135deg, transparent 18%, rgba(99, 102, 241, 0.25) 19%, rgba(99, 102, 241, 0.25) 20%, transparent 21%),
+        linear-gradient(45deg, transparent 38%, rgba(99, 102, 241, 0.25) 39%, rgba(99, 102, 241, 0.25) 40%, transparent 41%),
+        linear-gradient(90deg, transparent 58%, rgba(99, 102, 241, 0.25) 59%, rgba(99, 102, 241, 0.25) 60%, transparent 61%),
+        linear-gradient(180deg, transparent 78%, rgba(99, 102, 241, 0.25) 79%, rgba(99, 102, 241, 0.25) 80%, transparent 81%);
+    background-size: 
+        300px 300px,
+        350px 350px,
+        280px 280px,
+        320px 320px,
+        300px 300px,
+        250px 250px,
+        270px 270px,
+        100% 100%,
+        100% 100%,
+        100% 100%,
+        100% 100%;
+    background-position: 
+        0 0,
+        200px 200px,
+        400px 500px,
+        100px 600px,
+        600px 150px,
+        300px 400px,
+        500px 700px,
+        0 0,
+        0 0,
+        0 0,
+        0 0;
+    animation: neuralPulse 10s ease-in-out infinite;
+    filter: blur(0.8px);
+}
+
+.neural-network::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 25% 40%, rgba(99, 102, 241, 0.2) 1.5px, transparent 2.5px),
+        radial-gradient(circle at 75% 55%, rgba(99, 102, 241, 0.2) 1.5px, transparent 2.5px),
+        radial-gradient(circle at 35% 70%, rgba(99, 102, 241, 0.2) 1.5px, transparent 2.5px),
+        linear-gradient(120deg, transparent 48%, rgba(99, 102, 241, 0.15) 49%, rgba(99, 102, 241, 0.15) 50%, transparent 51%);
+    background-size: 
+        280px 280px,
+        320px 320px,
+        300px 300px,
+        100% 100%;
+    background-position: 
+        150px 300px,
+        550px 400px,
+        250px 550px,
+        0 0;
+    animation: neuralPulse 14s ease-in-out infinite reverse;
+    opacity: 0.2;
+    filter: blur(0.6px);
+}
+
+@keyframes neuralPulse {
+    0%, 100% {
+        opacity: 0.25;
+        transform: scale(1) rotate(0deg);
+    }
+    25% {
+        opacity: 0.3;
+        transform: scale(1.01) rotate(0.5deg);
+    }
+    50% {
+        opacity: 0.35;
+        transform: scale(1.02) rotate(0deg);
+    }
+    75% {
+        opacity: 0.3;
+        transform: scale(1.01) rotate(-0.5deg);
+    }
+}
+
+/* Partículas de datos - Puntos moviéndose como flujo de datos */
+.data-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.data-particles::before {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(16, 185, 129, 0.5);
+    border-radius: 50%;
+    box-shadow: 
+        10vw 20vh 0 2px rgba(16, 185, 129, 0.45),
+        30vw 40vh 0 2px rgba(16, 185, 129, 0.4),
+        50vw 10vh 0 2px rgba(16, 185, 129, 0.45),
+        70vw 60vh 0 2px rgba(16, 185, 129, 0.35),
+        90vw 30vh 0 2px rgba(16, 185, 129, 0.45),
+        20vw 70vh 0 2px rgba(16, 185, 129, 0.4),
+        60vw 80vh 0 2px rgba(16, 185, 129, 0.45),
+        40vw 50vh 0 2px rgba(16, 185, 129, 0.35),
+        15vw 35vh 0 1.5px rgba(16, 185, 129, 0.4),
+        85vw 65vh 0 1.5px rgba(16, 185, 129, 0.4);
+    animation: dataFlow 18s linear infinite;
+    filter: blur(0.5px);
+}
+
+.data-particles::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: rgba(16, 185, 129, 0.35);
+    border-radius: 50%;
+    box-shadow: 
+        15vw 25vh 0 1.5px rgba(16, 185, 129, 0.3),
+        35vw 45vh 0 1.5px rgba(16, 185, 129, 0.35),
+        55vw 15vh 0 1.5px rgba(16, 185, 129, 0.25),
+        75vw 65vh 0 1.5px rgba(16, 185, 129, 0.35),
+        25vw 75vh 0 1.5px rgba(16, 185, 129, 0.3),
+        65vw 85vh 0 1.5px rgba(16, 185, 129, 0.35),
+        45vw 55vh 0 1.5px rgba(16, 185, 129, 0.25),
+        5vw 45vh 0 1px rgba(16, 185, 129, 0.3),
+        95vw 55vh 0 1px rgba(16, 185, 129, 0.3);
+    animation: dataFlow 22s linear infinite reverse;
+    filter: blur(0.5px);
+}
+
+@keyframes dataFlow {
+    0% {
+        transform: translate(0, 100vh);
+        opacity: 0.3;
+    }
+    10% {
+        opacity: 0.4;
+    }
+    25% {
+        transform: translate(30px, 70vh);
+        opacity: 0.45;
+    }
+    50% {
+        transform: translate(-20px, 40vh);
+        opacity: 0.4;
+    }
+    75% {
+        transform: translate(25px, 10vh);
+        opacity: 0.45;
+    }
+    90% {
+        opacity: 0.4;
+    }
+    100% {
+        transform: translate(0, -20vh);
+        opacity: 0.3;
+    }
+}
+
+/* Efecto glitch sutil en el background */
+.glitch-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -3;
+    pointer-events: none;
+    animation: glitchBackground 8s ease-in-out infinite;
+    background: transparent;
+    mix-blend-mode: overlay;
+}
+
+.glitch-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent 0%,
+        rgba(99, 102, 241, 0.01) 49%,
+        rgba(99, 102, 241, 0.02) 50%,
+        rgba(99, 102, 241, 0.01) 51%,
+        transparent 100%);
+    animation: glitchBackground 8s ease-in-out infinite;
+}
+
+@keyframes glitchBackground {
+    0%, 100% {
+        transform: translateX(0);
+        opacity: 0;
+    }
+    8% {
+        transform: translateX(-0.5px);
+        opacity: 0.3;
+    }
+    10% {
+        transform: translateX(-1px);
+        opacity: 0.5;
+    }
+    12% {
+        transform: translateX(0.5px);
+        opacity: 0.3;
+    }
+    20% {
+        transform: translateX(1px);
+        opacity: 0.5;
+    }
+    22% {
+        transform: translateX(-0.5px);
+        opacity: 0.3;
+    }
+    30% {
+        transform: translateX(-0.5px);
+        opacity: 0.3;
+    }
+    32% {
+        transform: translateX(0.5px);
+        opacity: 0.5;
+    }
+    40% {
+        transform: translateX(0.5px);
+        opacity: 0.3;
+    }
+    50%, 90% {
+        transform: translateX(0);
+        opacity: 0;
+    }
+}
+
+/* Matriz de código - Caracteres cayendo suavemente */
+.code-matrix {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    font-family: 'Courier New', 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: rgba(99, 102, 241, 0.18);
+    overflow: hidden;
+}
+
+.code-matrix::before {
+    content: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+-=[]{}|;:,.<>?';
+    position: absolute;
+    top: -100%;
+    left: 10%;
+    width: 8%;
+    height: 200%;
+    line-height: 1.8;
+    letter-spacing: 3px;
+    word-spacing: 8px;
+    animation: matrixFall 25s linear infinite;
+    opacity: 0.18;
+    filter: blur(0.8px);
+    writing-mode: vertical-lr;
+    text-orientation: upright;
+}
+
+.code-matrix::after {
+    content: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+-=[]{}|;:,.<>?';
+    position: absolute;
+    top: -100%;
+    left: 45%;
+    width: 8%;
+    height: 200%;
+    line-height: 1.8;
+    letter-spacing: 3px;
+    word-spacing: 8px;
+    animation: matrixFall 30s linear infinite;
+    animation-delay: -12s;
+    opacity: 0.15;
+    filter: blur(0.8px);
+    writing-mode: vertical-lr;
+    text-orientation: upright;
+}
+
+@keyframes matrixFall {
+    0% {
+        transform: translateY(0);
+        opacity: 0.15;
+    }
+    20% {
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 0.18;
+    }
+    80% {
+        opacity: 0.2;
+    }
+    100% {
+        transform: translateY(200%);
+        opacity: 0.15;
+    }
+}
+
+/* Ondas de sonido - Círculos concéntricos expandiéndose */
+.sound-waves {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    height: 200px;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.sound-waves::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border: 2px solid rgba(99, 102, 241, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: soundWave 5s ease-out infinite;
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+}
+
+.sound-waves::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border: 1.5px solid rgba(99, 102, 241, 0.18);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: soundWave 5s ease-out infinite;
+    animation-delay: 2.5s;
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.15);
+}
+
+@keyframes soundWave {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 0.2;
+    }
+    30% {
+        opacity: 0.25;
+    }
+    50% {
+        opacity: 0.22;
+    }
+    100% {
+        width: 1000px;
+        height: 1000px;
+        opacity: 0;
+    }
+}
+
+/* Asegurar que los nuevos elementos estén en el z-index correcto */
+.neural-network,
+.data-particles,
+.code-matrix,
+.sound-waves,
+.floating-code {
+    z-index: 0;
+}
+
+.glitch-background {
+    z-index: -1;
+}
+*/
+

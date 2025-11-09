@@ -72,7 +72,7 @@ def main():
     try:
         subprocess.run([
             sys.executable, "-m", "uvicorn",
-            "backend.api.main:app",
+            "src.api.main:app",
             "--host", "0.0.0.0",
             "--port", "8000",
             "--reload"

@@ -1,0 +1,9 @@
+---
+alwaysApply: true
+description: >
+  Todas las tareas, cambios y nuevas implementaciones deben realizarse exclusivamente en el frontend.
+  El backend NO debe ser modificado bajo ninguna circunstancia, excepto cuando sea estrictamente necesario
+  y no haya ninguna alternativa viable en el frontend. 
+  Si surge la necesidad de cambiar el backend, debe justificarse explícitamente y ser aprobado antes de ejecutarse.
+
+---

@@ -1,0 +1,26 @@
+/* ===== MSMK UNIVERSITY - AI VOICE INTERFACE ===== */
+/* Archivo principal de estilos - Modularizado */
+
+/* Estilos base y reset */
+@import url('base.css');
+
+/* Reactor Arc - Botón de activación */
+@import url('arc-reactor.css');
+
+/* Efectos HUD y elementos de interfaz */
+@import url('hud-effects.css');
+
+/* Display de estado y barras de frecuencia */
+@import url('status-display.css');
+
+/* Chat dorado de conversación */
+@import url('gold-chat.css');
+
+/* Efectos  - Cuadro  */
+@import url('artistic-effects.css');
+
+/* Efectos avanzados adicionales */
+@import url('advanced-effects.css');
+
+/* Estilos responsive para todos los tamaños de pantalla */
+@import url('responsive.css');

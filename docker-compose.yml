@@ -1,0 +1,115 @@
+# ========================================
+# MSMK Voice Assistant - Docker Compose
+# ========================================
+# Orquestación completa del sistema
+# Backend + Frontend integrados
+# ========================================
+
+services:
+  # ==========================================
+  # Backend A.R.C.A-LLM
+  # ==========================================
+  backend:
+    build:
+      context: backend
+      dockerfile: Dockerfile
+      x-no-cache: true
+    container_name: msmk-backend
+    restart: unless-stopped
+    
+    ports:
+      - "8000:8000"  # API Web
+    
+    volumes:
+      # Persistir modelos descargados (con permisos correctos)
+      - ./models:/app/models:rw
+      # Logs
+      - ./logs:/app/logs:rw
+      # Código fuente (para desarrollo - comentar en producción)
+      - ./backend/src:/app/src:ro
+      - ./backend/requirements.txt:/app/requirements.txt:ro
+    
+    environment:
+      # === LM Studio Configuration ===
+      LM_STUDIO_URL: "http://192.168.1.25:1234/v1"
+      LM_STUDIO_MODEL: "qwen/qwen3-4b-2507"
+      LLM_MAX_TOKENS: "150"
+      LLM_TEMPERATURE: "0.7"
+      
+      # === Whisper STT Configuration ===
+      WHISPER_MODEL: "tiny"  # tiny, base, small, medium, large
+      WHISPER_DEVICE: "cpu"
+      WHISPER_COMPUTE_TYPE: "int8"
+      
+      # === TTS Configuration ===
+      TTS_RATE: "175"
+      TTS_VOLUME: "0.9"
+      TTS_VOICE_INDEX: "0"
+      
+      # === API Configuration ===
+      API_HOST: "0.0.0.0"
+      API_PORT: "8000"
+      CORS_ORIGINS: '["http://localhost:3000", "http://127.0.0.1:3000", "https://localhost:3443", "https://192.168.1.25:3443", "http://localhost:5173", "http://frontend:80"]'
+      
+      # === Logging ===
+      LOG_LEVEL: "INFO"
+      
+      # === Cache directories ===
+      HF_HOME: "/app/models/hf_cache"
+      TRANSFORMERS_CACHE: "/app/models/hf_cache"
+    
+    networks:
+      - msmk-network
+    
+    # Healthcheck
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ==========================================
+  # Frontend MSMK Voice Assistant
+  # ==========================================
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: msmk-frontend
+    restart: unless-stopped
+    
+    ports:
+      - "3000:80"   # Web Interface (HTTP - redirige a HTTPS si SSL está configurado)
+      - "3443:443"  # Web Interface (HTTPS)
+    
+    depends_on:
+      - backend
+    
+    networks:
+      - msmk-network
+    
+    # Healthcheck
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+# ==========================================
+# Networks
+# ==========================================
+networks:
+  msmk-network:
+    driver: bridge
+    name: msmk-network
+
+# ==========================================
+# Volumes (persistencia de datos)
+# ==========================================
+volumes:
+  models:
+    driver: local
+  logs:
+    driver: local

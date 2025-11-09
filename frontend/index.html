@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<!-- Declaración del tipo de documento: HTML5 -->
+
+<html lang="es">
+<!-- Elemento raíz del documento, lang="es" indica que el idioma es español -->
+
+<head>
+    <!-- ===== METADATOS Y CONFIGURACIÓN ===== -->
+    <!-- El <head> contiene información sobre el documento que no se ve en la página -->
+    
+    <meta charset="UTF-8">
+    <!-- charset: Define la codificación de caracteres (UTF-8 soporta todos los idiomas) -->
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- viewport: Hace la página responsive (se adapta a dispositivos móviles) -->
+    <!-- width=device-width: El ancho será el del dispositivo -->
+    <!-- initial-scale=1.0: Zoom inicial al 100% -->
+    
+    <title>MSMK University - AI Voice Assistant</title>
+    <!-- Título que aparece en la pestaña del navegador -->
+    
+    <!-- Fuentes tecnológicas -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/main.css?v=2">
+    <!-- Enlace al archivo CSS modular -->
+</head>
+
+<body>
+<!-- El <body> contiene todo el contenido visible de la página -->
+    <!-- ===== EFECTOS DE FONDO ===== -->
+    
+    <!-- Capa de integración adicional para mejorar el fondo -->
+    <div class="background-integration"></div>
+    
+    <!-- ===== EFECTOS S  ===== -->
+    
+    <!-- Orbes flotantes de energía mejorados -->
+    <div class="energy-orb orb-1"></div>
+    <div class="energy-orb orb-2"></div>
+    <div class="energy-orb orb-3"></div>
+    <div class="energy-orb orb-4"></div>
+    
+    <!-- Circuitos y conexiones tecnológicas -->
+    <div class="tech-circuit"></div>
+    
+    <!-- Rayos de energía mejorados -->
+    <div class="energy-stream stream-1"></div>
+    <div class="energy-stream stream-2"></div>
+    <div class="energy-stream stream-3"></div>
+    
+    <!-- Partículas de energía mejoradas -->
+    <div class="energy-particles"></div>
+    
+    <!-- Formas geométricas tecnológicas -->
+    <div class="geometric-shape shape-1"></div>
+    <div class="geometric-shape shape-2"></div>
+    <div class="geometric-shape shape-3"></div>
+    
+    <!-- Nebulosas de color mejoradas -->
+    <div class="color-nebula nebula-1"></div>
+    <div class="color-nebula nebula-2"></div>
+    <div class="color-nebula nebula-3"></div>
+    
+    <!-- Efectos holográficos -->
+    <div class="hologram-effect"></div>
+    
+    <!-- Capas de profundidad volumétrica mejoradas -->
+    <div class="volumetric-layer layer-1"></div>
+    <div class="volumetric-layer layer-2"></div>
+    
+    <!-- Pulsos de energía -->
+    <div class="energy-pulse"></div>
+    
+    <!-- ===== MARCOS DE ESQUINA (Efecto HUD) ===== -->
+    <!-- Cuatro elementos que crean un marco en cada esquina de la pantalla -->
+    
+    <div class="corner-frame top-left"></div>
+    <!-- Marco superior izquierdo -->
+    
+    <div class="corner-frame top-right"></div>
+    <!-- Marco superior derecho -->
+    
+    <div class="corner-frame bottom-left"></div>
+    <!-- Marco inferior izquierdo -->
+    
+    <div class="corner-frame bottom-right"></div>
+    <!-- Marco inferior derecho -->
+
+    <!-- ===== ETIQUETA SUPERIOR ===== -->
+    <div class="tech-label"><span class="highlight-text">MSMK UNIVERSITY</span> · AI VOICE INTERFACE</div>
+    <!-- Título que aparece en la parte superior de la pantalla -->
+
+    <!-- ===== CHAT DORADO DE CONVERSACIÓN ===== -->
+    <div class="gold-chat-container" id="goldChat">
+        <div class="gold-chat-messages" id="goldChatMessages">
+            <!-- Los mensajes se añadirán aquí dinámicamente -->
+        </div>
+    </div>
+
+    <!-- ===== CANVAS (Lienzo de dibujo) ===== -->
+    <canvas id="canvas"></canvas>
+    <!-- Elemento donde JavaScript dibuja todas las animaciones del orbe -->
+    <!-- El atributo id="canvas" permite que JavaScript lo encuentre -->
+
+    <!-- ===== INTERFAZ DE USUARIO (UI) ===== -->
+    <!-- Esta capa se coloca encima del canvas sin bloquear los clicks -->
+    <div class="ui-overlay">
+        <!-- Círculo central estilo Iron Man -->
+        <div class="orbe-circle">
+            <!-- Segundo círculo interno -->
+            <div class="orbe-circle-2">
+                <!-- Mensaje de ayuda para el usuario dentro del círculo -->
+                <div class="click-hint" id="clickHint">CLICK TO ACTIVATE</div>
+            </div>
+        </div>
+        
+        <!-- Texto que muestra el estado del sistema -->
+        <div class="status-text" id="statusText">● LISTENING</div>
+        <!-- ● es el símbolo de un círculo relleno -->
+        <!-- id="statusText" permite que JavaScript cambie su contenido -->
+        <!-- Contenedor de las barras de frecuencia (efecto ecualizador) -->
+        <div class="frequency-bars" id="freqBars">
+            <!-- 7 barras individuales que se animan como un ecualizador de audio -->
+            <div class="freq-bar"></div> <!-- Barra 1 -->
+            <div class="freq-bar"></div> <!-- Barra 2 -->
+            <div class="freq-bar"></div> <!-- Barra 3 -->
+            <div class="freq-bar"></div> <!-- Barra 4 (centro) -->
+            <div class="freq-bar"></div> <!-- Barra 5 -->
+            <div class="freq-bar"></div> <!-- Barra 6 -->
+            <div class="freq-bar"></div> <!-- Barra 7 -->
+        </div>
+    </div>
+
+    <!-- ===== SCRIPTS (CÓDIGO JAVASCRIPT) ===== -->
+    <!-- Los archivos se cargan en orden de dependencias -->
+    <script src="js/config.js"></script>
+    <script src="js/responsive.js"></script>
+    <script src="js/gold-chat.js?v=2"></script>
+    <script src="js/backend-integration.js?v=2"></script>
+    <script src="js/state.js"></script>
+    <script src="js/drawing.js"></script>
+    <script src="js/orb.js"></script>
+    <script src="js/animation.js"></script>
+    <script src="js/events.js"></script>
+    <script src="js/init.js"></script>
+</body>
+</html>

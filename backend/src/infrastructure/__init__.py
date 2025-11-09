@@ -1,0 +1,2 @@
+"""Infrastructure layer - Implementaciones técnicas."""
+

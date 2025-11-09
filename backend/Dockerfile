@@ -1,5 +1,5 @@
 # ========================================
-# Backend A.R.C.A-LLM - Dockerfile
+# A.R.C.A LLM - Dockerfile
 # ========================================
 # Imagen optimizada para asistente de voz
 # Python 3.11 (compatible con todas las dependencias)
@@ -42,14 +42,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # Copiar requirements primero (para aprovechar cache de Docker)
-COPY backend/requirements.txt /app/requirements.txt
+COPY requirements.txt .
 
 # Instalar dependencias Python
 RUN pip install --upgrade pip setuptools wheel && \
-    pip install -r /app/requirements.txt
+    pip install -r requirements.txt
 
-# Copiar código fuente del backend
-COPY backend/ /app/backend/
+# Copiar código fuente
+COPY . .
 
 # Crear directorios para cache y datos
 RUN mkdir -p /app/models/hf_cache \
@@ -70,5 +70,5 @@ RUN useradd -m -u 1000 arca && \
 USER arca
 
 # Comando de inicio
-CMD ["uvicorn", "backend.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
