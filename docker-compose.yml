@@ -11,8 +11,8 @@ services:
   # ==========================================
   backend:
     build:
-      context: .
-      dockerfile: backend/Dockerfile
+      context: backend
+      dockerfile: Dockerfile
       x-no-cache: true
     container_name: msmk-backend
     restart: unless-stopped
@@ -26,16 +26,11 @@ services:
       # Logs
       - ./logs:/app/logs:rw
       # Código fuente (para desarrollo - comentar en producción)
-      - ./backend:/app/backend:ro
+      - ./backend/src:/app/src:ro
+      - ./backend/requirements.txt:/app/requirements.txt:ro
     
     environment:
       # === LM Studio Configuration ===
-      # Configurar la URL del servidor Ubuntu donde corre LM Studio
-      # Opción 1: Usar IP del servidor Ubuntu (ej: http://192.168.1.100:1234/v1)
-      # Opción 2: Usar hostname del servidor Ubuntu (ej: http://ubuntu-server:1234/v1)
-      # Opción 3: Si LM Studio está en la misma Mac: http://host.docker.internal:1234/v1
-      # 
-      # IMPORTANTE: Reemplaza con la IP o hostname real de tu servidor Ubuntu
       LM_STUDIO_URL: "http://192.168.1.25:1234/v1"
       LM_STUDIO_MODEL: "qwen/qwen3-4b-2507"
       LLM_MAX_TOKENS: "150"
@@ -68,7 +63,7 @@ services:
     
     # Healthcheck
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -118,4 +113,3 @@ volumes:
     driver: local
   logs:
     driver: local
-

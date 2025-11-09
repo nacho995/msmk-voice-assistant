@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.R.C.A LLM - Voice Assistant</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>🤖 A.R.C.A</h1>
+            <p class="subtitle">Advanced Reasoning Cognitive Architecture</p>
+            <div class="status-indicator" id="statusIndicator">
+                <span class="status-dot"></span>
+                <span class="status-text">Listo</span>
+            </div>
+        </header>
+
+        <!-- Conversation Display -->
+        <div class="conversation-container" id="conversationContainer">
+            <div class="conversation-messages" id="conversationMessages">
+                <!-- Messages will be dynamically added here -->
+                <div class="welcome-message">
+                    <p>👋 Hola! Soy A.R.C.A, tu asistente por voz.</p>
+                    <p>Presiona el botón del micrófono para hablar.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Voice Control -->
+        <div class="voice-control">
+            <button id="voiceButton" class="voice-button" aria-label="Presionar para hablar">
+                <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                    <line x1="12" y1="19" x2="12" y2="23"></line>
+                    <line x1="8" y1="23" x2="16" y2="23"></line>
+                </svg>
+                <span class="button-text">Presiona para hablar</span>
+            </button>
+        </div>
+
+        <!-- Latency Stats (Optional) -->
+        <div class="stats-container" id="statsContainer" style="display: none;">
+            <div class="stat">
+                <span class="stat-label">STT:</span>
+                <span class="stat-value" id="sttLatency">-</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">LLM:</span>
+                <span class="stat-value" id="llmLatency">-</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">TTS:</span>
+                <span class="stat-value" id="ttsLatency">-</span>
+            </div>
+            <div class="stat total">
+                <span class="stat-label">Total:</span>
+                <span class="stat-value" id="totalLatency">-</span>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button id="clearButton" class="control-button">🗑️ Limpiar Conversación</button>
+            <button id="statsToggle" class="control-button">📊 Métricas</button>
+        </div>
+    </div>
+
+    <!-- Audio player (hidden, for auto-play) -->
+    <audio id="audioPlayer" style="display: none;"></audio>
+
+    <!-- Script -->
+    <script src="/static/js/voice-interface.js"></script>
+</body>
+</html>
+

@@ -17,7 +17,6 @@ const CONFIG = {
 };
 
 const API_VOICE_ENDPOINT = `${CONFIG.BACKEND_URL}/api/voice/process`;
-const TARGET_SAMPLE_RATE = 16000;
 
 // Variables para captura de audio (expuestas globalmente)
 window.mediaRecorder = null;
@@ -28,125 +27,6 @@ window.recordingStartTime = null;
 window.userAudioAnalyser = null;
 let userAudioContext = null;
 let userAnalyserNode = null;
-
-async function convertBlobToWav(blob, targetSampleRate = TARGET_SAMPLE_RATE) {
-    try {
-        if (!blob || blob.size === 0) {
-            console.warn('⚠️ Blob vacío, usando audio original');
-            return blob;
-        }
-
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        if (!AudioCtx) {
-            console.warn('⚠️ AudioContext no disponible en este navegador, se envía audio original');
-            return blob;
-        }
-
-        const arrayBuffer = await blob.arrayBuffer();
-        const audioContext = new AudioCtx();
-
-        const audioBuffer = await new Promise((resolve, reject) => {
-            audioContext.decodeAudioData(
-                arrayBuffer,
-                (decoded) => resolve(decoded),
-                (error) => reject(error)
-            );
-        });
-
-        await audioContext.close();
-
-        const numberOfChannels = audioBuffer.numberOfChannels;
-        const duration = audioBuffer.duration;
-        const length = Math.ceil(duration * targetSampleRate);
-
-        const offlineContext = new OfflineAudioContext(numberOfChannels, length, targetSampleRate);
-        const source = offlineContext.createBufferSource();
-        source.buffer = audioBuffer;
-        source.connect(offlineContext.destination);
-        source.start(0);
-
-        const renderedBuffer = await offlineContext.startRendering();
-
-        const wavArrayBuffer = audioBufferToWav(renderedBuffer);
-        return new Blob([wavArrayBuffer], { type: 'audio/wav' });
-    } catch (error) {
-        console.warn('⚠️ Error convirtiendo audio a WAV. Se envía original.', error);
-        return blob;
-    }
-}
-
-function audioBufferToWav(buffer) {
-    const numChannels = buffer.numberOfChannels;
-    const sampleRate = buffer.sampleRate;
-    const format = 1;
-    const bitDepth = 16;
-
-    const numSamples = buffer.length;
-    const bytesPerSample = bitDepth / 8;
-    const blockAlign = numChannels * bytesPerSample;
-    const byteRate = sampleRate * blockAlign;
-    const dataLength = numSamples * blockAlign;
-    const bufferLength = 44 + dataLength;
-
-    const arrayBuffer = new ArrayBuffer(bufferLength);
-    const view = new DataView(arrayBuffer);
-
-    let offset = 0;
-
-    function writeString(str) {
-        for (let i = 0; i < str.length; i++) {
-            view.setUint8(offset++, str.charCodeAt(i));
-        }
-    }
-
-    function writeUint32(value) {
-        view.setUint32(offset, value, true);
-        offset += 4;
-    }
-
-    function writeUint16(value) {
-        view.setUint16(offset, value, true);
-        offset += 2;
-    }
-
-    writeString('RIFF');
-    writeUint32(36 + dataLength);
-    writeString('WAVE');
-    writeString('fmt ');
-    writeUint32(16);
-    writeUint16(format);
-    writeUint16(numChannels);
-    writeUint32(sampleRate);
-    writeUint32(byteRate);
-    writeUint16(blockAlign);
-    writeUint16(bitDepth);
-    writeString('data');
-    writeUint32(dataLength);
-
-    const interleaved = interleave(buffer);
-    const volume = 32767;
-    for (let i = 0; i < interleaved.length; i++, offset += 2) {
-        let sample = Math.max(-1, Math.min(1, interleaved[i]));
-        view.setInt16(offset, sample < 0 ? sample * volume : sample * volume, true);
-    }
-
-    return arrayBuffer;
-}
-
-function interleave(buffer) {
-    const numChannels = buffer.numberOfChannels;
-    const length = buffer.length;
-    const result = new Float32Array(length * numChannels);
-    let index = 0;
-
-    for (let i = 0; i < length; i++) {
-        for (let channel = 0; channel < numChannels; channel++) {
-            result[index++] = buffer.getChannelData(channel)[i];
-        }
-    }
-
-    return result;
-}
 
 // Configurar análisis de audio en tiempo real del usuario
 function configurarAnalisisAudioUsuario(stream) {
@@ -403,26 +283,11 @@ async function enviarAudioAlBackend(audioBlob) {
 
         // Preparar FormData
         const formData = new FormData();
-
-        // Convertir audio a WAV (Whisper prefiere PCM lineal)
-        let audioToSend = audioBlob;
-        try {
-            audioToSend = await convertBlobToWav(audioBlob);
-        } catch (conversionError) {
-            console.warn('⚠️ Error al convertir audio a WAV:', conversionError);
-            audioToSend = audioBlob;
-        }
-
-        const audioFilename = audioToSend.type === 'audio/wav' ? 'voice.wav' : 'voice.webm';
-        formData.append('audio', audioToSend, audioFilename);
-        formData.append('language', 'es');
+        formData.append('audio', audioBlob, 'voice.webm');
         
-        // IMPORTANTE: Solo enviar session_id si existe y no fue reseteado por un error
-        // Si conversationId es null, el backend creará una conversación nueva
         if (conversationId) {
-            formData.append('session_id', conversationId);
+            formData.append('conversation_id', conversationId);
         }
-        // Si conversationId es null, no enviar nada y el backend generará un nuevo UUID
 
         // Enviar al backend
         console.log(`🚀 Enviando audio al backend: ${audioBlob.size} bytes`);
@@ -447,72 +312,15 @@ async function enviarAudioAlBackend(audioBlob) {
                     errorDetail = errorJson.detail || errorJson.message || errorText;
                     
                     // Detectar tipos específicos de error
-                    if (errorDetail.includes('limpiada automáticamente') || errorDetail.includes('ha sido limpiada')) {
-                        // El backend ya limpió el historial automáticamente
-                        errorMessage = '✅ Problema resuelto automáticamente';
-                        errorDetail = 'El modelo no reconocía alguna palabra en el historial. ' +
-                            'La conversación ha sido limpiada automáticamente. ' +
-                            'Por favor, intenta de nuevo con tu mensaje.';
-                    } else if (errorDetail.includes('out of vocabulary') || (errorDetail.includes('Token') && errorDetail.includes('out of vocabulary'))) {
-                        errorMessage = '⚠️ Error: palabra no reconocida';
-                        errorDetail = 'El modelo no puede procesar alguna palabra en el historial de conversación.\n\n' +
-                            'Esto puede deberse a:\n' +
-                            '• Palabras poco comunes en conversaciones anteriores (como "karaoke")\n' +
-                            '• El historial contiene palabras que el modelo no reconoce\n\n' +
-                            '💡 Limpiando el historial automáticamente...';
-                        
-                        // CRÍTICO: Limpiar conversación ANTES de resetear conversationId
-                        // Guardar el conversationId actual antes de limpiarlo
-                        const currentConversationId = conversationId;
-                        
-                        if (currentConversationId) {
-                            console.log('🧹 Limpiando conversación existente con palabras problemáticas:', currentConversationId);
-                            try {
-                                const clearUrl = isDocker ? `/api/conversation/${currentConversationId}` : `${CONFIG.BACKEND_URL}/api/conversation/${currentConversationId}`;
-                                const clearResponse = await fetch(clearUrl, { method: 'DELETE' });
-                                if (clearResponse.ok) {
-                                    console.log('✅ Conversación limpiada en backend');
-                                } else {
-                                    console.warn('⚠️ No se pudo limpiar conversación en backend');
-                                }
-                            } catch (clearError) {
-                                console.warn('⚠️ Error al limpiar conversación:', clearError);
-                            }
-                        }
-                        
-                        // SIEMPRE resetear conversationId para forzar nueva conversación limpia
-                        // Esto asegura que la próxima petición NO envíe session_id
-                        conversationId = null;
-                        console.log('🔄 ConversationId reseteado a null - próxima petición creará conversación nueva');
-                        
-                        // Mostrar mensaje de confirmación
-                        if (window.addAIMessage) {
-                            setTimeout(() => {
-                                window.addAIMessage('✅ Historial limpiado completamente. La próxima vez será una conversación nueva y limpia.\n\nPor favor, intenta de nuevo con tu mensaje.');
-                            }, 500);
-                        }
-                    } else if (errorDetail.includes('vocabulario limitado') || 
-                               (errorDetail.includes('vocabulary') && errorDetail.includes('limitado')) ||
-                               (errorDetail.includes('modelo de transcripción') && errorDetail.includes('tiny'))) {
-                        errorMessage = 'Error: Modelo de transcripción con vocabulario limitado';
-                        errorDetail = 'El modelo Whisper "tiny" tiene un vocabulario limitado y no puede transcribir algunas palabras. ' +
-                            'Intenta usar palabras más comunes o considera cambiar a un modelo más grande (base, small, medium).';
-                    } else if (errorDetail.includes('Whisper transcription error') || errorDetail.includes('Whisper no pudo')) {
-                        errorMessage = '⚠️ Error de transcripción de voz';
-                        errorDetail = 'Whisper no pudo procesar el audio. Esto puede deberse a:\n\n' +
-                            '• Palabras poco comunes que el modelo "tiny" no reconoce\n' +
-                            '• Calidad de audio insuficiente\n' +
-                            '• Ruido de fondo excesivo\n\n' +
-                            '💡 Solución: Intenta hablar más claro y usar palabras más comunes.';
-                        
-                        // Resetear conversationId para próxima vez
-                        conversationId = null;
-                        console.log('🔄 ConversationId reseteado debido a error de Whisper');
-                        
-                        // Intentar limpiar si existe conversación
-                        limpiarConversacion().catch(() => {
-                            // Ignorar si no hay conversación
-                        });
+                    if (errorDetail.includes('out of vocabulary') || errorDetail.includes('Token') && errorDetail.includes('out of vocabulary')) {
+                        errorMessage = 'Error: palabra no reconocida por el modelo';
+                        errorDetail = 'El modelo de IA no reconoce alguna palabra en el mensaje. Esto puede deberse a:\n\n' +
+                            '• Historial de conversación con palabras antiguas\n' +
+                            '• Palabra poco común o en otro idioma\n\n' +
+                            '💡 Solución: Limpia la conversación y vuelve a intentar con palabras más comunes.';
+                    } else if (errorDetail.includes('Whisper transcription error')) {
+                        errorMessage = 'Error de transcripción de voz';
+                        errorDetail = 'No se pudo procesar el audio. Verifica la calidad del micrófono.';
                     } else if (errorDetail.includes('LLM') || errorDetail.includes('language model')) {
                         errorMessage = 'Error del modelo de lenguaje';
                         errorDetail = 'El modelo de IA no pudo generar una respuesta. Intenta de nuevo.';
@@ -532,18 +340,20 @@ async function enviarAudioAlBackend(audioBlob) {
             
             // Mostrar error en el chat dorado
             if (window.addAIMessage) {
-                let errorText = '';
+                let errorText = `⚠️ ${errorMessage}\n\n${errorDetail}`;
                 
-                // Si el backend ya limpió automáticamente, mostrar mensaje positivo
-                if (errorDetail.includes('limpiada automáticamente') || errorDetail.includes('ha sido limpiada')) {
-                    errorText = `${errorMessage}\n\n${errorDetail}`;
+                // Si es error de vocabulario, ofrecer limpiar conversación
+                if (errorDetail.includes('out of vocabulary') || errorDetail.includes('Limpia la conversación')) {
+                    errorText += '\n\n🔄 Puedo limpiar la conversación automáticamente. ¿Quieres que lo haga?';
+                    // Limpiar conversación automáticamente después de 3 segundos si no hay interacción
+                    setTimeout(() => {
+                        limpiarConversacion();
+                        if (window.addAIMessage) {
+                            window.addAIMessage('✅ Conversación limpiada. Puedes intentar de nuevo.');
+                        }
+                    }, 3000);
                 } else {
-                    errorText = `⚠️ ${errorMessage}\n\n${errorDetail}`;
-                    
-                    // Si es error de vocabulario, ya se limpió arriba, solo mostrar mensaje
-                    if (!errorDetail.includes('out of vocabulary') && !errorDetail.includes('Limpia la conversación')) {
-                        errorText += '\n\nPor favor, intenta de nuevo.';
-                    }
+                    errorText += '\n\nPor favor, intenta de nuevo.';
                 }
                 
                 window.addAIMessage(errorText);
@@ -553,26 +363,19 @@ async function enviarAudioAlBackend(audioBlob) {
         }
 
         // Obtener headers (Base64 encoded)
-        const sessionIdHeader = response.headers.get('X-Session-ID');
-        const conversationIdHeader = response.headers.get('X-Conversation-Id'); // Fallback
+        const conversationIdHeader = response.headers.get('X-Conversation-Id');
         const transcribedTextHeader = response.headers.get('X-Transcribed-Text');
         const llmResponseHeader = response.headers.get('X-Response-Text');
 
-        // Decodificar session ID con manejo de errores
-        // Priorizar X-Session-ID, luego X-Conversation-Id como fallback
-        const idHeader = sessionIdHeader || conversationIdHeader;
-        if (idHeader) {
+        // Decodificar conversation ID con manejo de errores
+        if (conversationIdHeader) {
             try {
-                // Intentar decodificar Base64 primero
-                conversationId = atob(idHeader);
+                conversationId = atob(conversationIdHeader);
             } catch (e) {
-                // Si no es Base64, usar directamente
-                console.log('Session ID no es Base64, usando directamente');
-                conversationId = idHeader;
+                console.warn('Error decodificando conversation ID:', e);
+                // Intentar usar directamente si no es Base64
+                conversationId = conversationIdHeader;
             }
-            console.log('📝 Session ID recibido del backend:', conversationId);
-        } else {
-            console.log('⚠️ No se recibió Session ID del backend');
         }
         
         let transcribedText = '';
@@ -688,7 +491,15 @@ async function reproducirRespuesta(audioBlob) {
         }
 
         // Analizar audio para animar el orbe
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const audioContext = new AudioCtx();
+        if (audioContext.state === 'suspended') {
+            try {
+                await audioContext.resume();
+            } catch (resumeError) {
+                console.warn('No se pudo reanudar el AudioContext automáticamente:', resumeError);
+            }
+        }
         const source = audioContext.createMediaElementSource(audio);
         const analyser = audioContext.createAnalyser();
         
@@ -743,7 +554,9 @@ async function reproducirRespuesta(audioBlob) {
             }
             if (window.setSystemActive) window.setSystemActive(false);
             URL.revokeObjectURL(audioUrl);
-            
+            if (audioContext.state !== 'closed') {
+                audioContext.close().catch((err) => console.warn('No se pudo cerrar AudioContext:', err));
+            }
             // Limpiar recursos de audio
             source.disconnect();
             analyser.disconnect();
@@ -763,7 +576,7 @@ async function reproducirRespuesta(audioBlob) {
 // Verificar salud del backend
 async function verificarBackend() {
     try {
-        const healthUrl = isDocker ? '/api/health' : `${CONFIG.BACKEND_URL}/api/health`;
+        const healthUrl = isDocker ? '/health' : `${CONFIG.BACKEND_URL}/health`;
         const response = await fetch(healthUrl);
         if (response.ok) {
             const data = await response.json();
@@ -808,8 +621,6 @@ function limpiarRecursosAudio() {
 async function limpiarConversacion() {
     if (!conversationId) {
         console.log('No hay conversación activa para limpiar');
-        // Aun así, asegurarse de que conversationId esté en null
-        conversationId = null;
         return;
     }
     
